@@ -3,6 +3,7 @@ import "./styles.css"
 import savedIngredientLayout from "./ingredient-layout.json"
 
 const assetUrl = (file) => `${import.meta.env.BASE_URL}assets/${file}`
+const ingredientImageUrl = new URL(assetUrl("hero-ingredients.png"), document.baseURI).href
 
 const ingredientPieces = [
   ["lettuceTop", "Top lettuce"],
@@ -29,7 +30,7 @@ document.querySelector("#app").innerHTML = `
   <main>
     <section class="hero" id="opening" data-hero>
       <img class="hero__background" src="${assetUrl("hero-background.png")}" alt="" width="1538" height="1022" fetchpriority="high" />
-      <div class="hero__ingredients" aria-hidden="true" style="--ingredients-image: url('${assetUrl("hero-ingredients.png")}')">
+      <div class="hero__ingredients" aria-hidden="true" style="--ingredients-image: url('${ingredientImageUrl}')">
         ${ingredientPieces.map(([id, label], index) => `
           <button class="ingredient-piece ingredient-piece--${id}" type="button" data-ingredient="${id}" data-enter="${index % 2 ? "bottom" : "top"}" tabindex="-1" aria-label="${label}">
             <span></span>

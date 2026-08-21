@@ -1,0 +1,90 @@
+{
+  "desktop": {
+    "lettuceTop": {
+      "x": 26.1,
+      "y": 22.2,
+      "scale": 1,
+      "rotate": -18
+    },
+    "tomatoLeft": {
+      "x": 12.4,
+      "y": 44.9,
+      "scale": 0.87,
+      "rotate": 10
+    },
+    "lettuceBottom": {
+      "x": 26.6,
+      "y": 89.7,
+      "scale": 0.9,
+      "rotate": 8
+    },
+    "onionTop": {
+      "x": 81.1,
+      "y": 23.2,
+      "scale": 0.92,
+      "rotate": 82
+    },
+    "lettuceRight": {
+      "x": 86.2,
+      "y": 54.3,
+      "scale": 0.59,
+      "rotate": 12
+    },
+    "tomatoRight": {
+      "x": 97.3,
+      "y": 84.7,
+      "scale": 1.6,
+      "rotate": -10
+    },
+    "onionBottom": {
+      "x": 71.5,
+      "y": 85.3,
+      "scale": 0.66,
+      "rotate": 16
+    }
+  },
+  "mobile": {
+    "lettuceTop": {
+      "x": 16.7,
+      "y": 21.8,
+      "scale": 0.89,
+      "rotate": -20
+    },
+    "tomatoLeft": {
+      "x": 10.2,
+      "y": 76.9,
+      "scale": 1.03,
+      "rotate": 12
+    },
+    "lettuceBottom": {
+      "x": 21.5,
+      "y": 51.7,
+      "scale": 0.54,
+      "rotate": 90
+    },
+    "onionTop": {
+      "x": 99,
+      "y": 17.7,
+      "scale": 1.6,
+      "rotate": -14
+    },
+    "lettuceRight": {
+      "x": 90.3,
+      "y": 91.1,
+      "scale": 1.6,
+      "rotate": -71
+    },
+    "tomatoRight": {
+      "x": 73.3,
+      "y": 48,
+      "scale": 0.56,
+      "rotate": -10
+    },
+    "onionBottom": {
+      "x": 75.5,
+      "y": 72.5,
+      "scale": 0.58,
+      "rotate": 14
+    }
+  }
+}

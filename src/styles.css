@@ -79,8 +79,7 @@ a {
   color: var(--cream);
 }
 
-.hero__background,
-.hero__ingredients {
+.hero__background {
   position: absolute;
   inset: 0;
   inline-size: 100%;
@@ -94,20 +93,156 @@ a {
 }
 
 .hero__ingredients {
+  position: absolute;
+  inset: 0;
   z-index: 2;
-  object-position: center;
   pointer-events: none;
-  will-change: transform, opacity;
 }
 
-.hero__ingredients--left {
-  clip-path: inset(0 50% 0 0);
-  animation: ingredients-left 1.05s cubic-bezier(.22, 1, .36, 1) 420ms both;
+.ingredient-piece {
+  --piece-scale: 1;
+  --piece-rotation: 0deg;
+  position: absolute;
+  z-index: 1;
+  inline-size: clamp(10rem, 19vw, 20rem);
+  aspect-ratio: 1;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  pointer-events: none;
+  transform: translate(-50%, -50%) rotate(var(--piece-rotation)) scale(var(--piece-scale));
+  transform-origin: center;
+  transition: filter 160ms ease;
+  will-change: left, top, transform;
 }
 
-.hero__ingredients--right {
-  clip-path: inset(0 0 0 50%);
-  animation: ingredients-right 1.05s cubic-bezier(.22, 1, .36, 1) 520ms both;
+.ingredient-piece > span {
+  position: absolute;
+  inset: 0;
+  display: block;
+  background-image: var(--ingredients-image);
+  background-repeat: no-repeat;
+  animation-duration: 1.05s;
+  animation-timing-function: cubic-bezier(.22, 1, .36, 1);
+  animation-fill-mode: both;
+}
+
+.ingredient-piece[data-enter="top"] > span {
+  animation-name: ingredient-from-top;
+  animation-delay: 420ms;
+}
+
+.ingredient-piece[data-enter="bottom"] > span {
+  animation-name: ingredient-from-bottom;
+  animation-delay: 520ms;
+}
+
+.ingredient-piece--lettuceTop { inline-size:clamp(12rem,23vw,24rem); aspect-ratio:380/330; }
+.ingredient-piece--lettuceTop>span { background-size:404% 310%; background-position:1.7% 2.9%; }
+.ingredient-piece--tomatoLeft { inline-size:clamp(9rem,18vw,19rem); aspect-ratio:310/250; }
+.ingredient-piece--tomatoLeft>span { background-size:495% 410%; background-position:0 45.2%; }
+.ingredient-piece--lettuceBottom { inline-size:clamp(11rem,21vw,22rem); aspect-ratio:340/230; }
+.ingredient-piece--lettuceBottom>span { background-size:452% 445%; background-position:1.7% 75.6%; }
+.ingredient-piece--onionTop { inline-size:clamp(9rem,18vw,19rem); aspect-ratio:330/310; }
+.ingredient-piece--onionTop>span { background-size:465% 330%; background-position:86.2% 12.6%; }
+.ingredient-piece--lettuceRight { inline-size:clamp(8rem,16vw,17rem); aspect-ratio:256/270; }
+.ingredient-piece--lettuceRight>span { background-size:600% 379%; background-position:100% 39.8%; }
+.ingredient-piece--tomatoRight { inline-size:clamp(9rem,18vw,19rem); aspect-ratio:330/260; }
+.ingredient-piece--tomatoRight>span { background-size:465% 394%; background-position:95.3% 68.1%; }
+.ingredient-piece--onionBottom { inline-size:clamp(9rem,18vw,19rem); aspect-ratio:330/264; }
+.ingredient-piece--onionBottom>span { background-size:465% 388%; background-position:70.5% 100%; }
+
+.hero__ingredients[data-editing="true"] {
+  z-index: 40;
+  pointer-events: auto;
+}
+
+.hero__ingredients[data-editing="true"] .ingredient-piece {
+  pointer-events: auto;
+  cursor: grab;
+  touch-action: none;
+}
+
+.hero__ingredients[data-editing="true"] .ingredient-piece:active {
+  cursor: grabbing;
+}
+
+.ingredient-piece[data-selected="true"] {
+  filter: drop-shadow(0 0 0.5rem var(--gold));
+}
+
+.ingredient-editor {
+  position: fixed;
+  inset-inline-start: 1rem;
+  inset-block-end: 1rem;
+  z-index: 100;
+  font-family: Arial, sans-serif;
+}
+
+.ingredient-editor button {
+  border: 0;
+  border-radius: 0.65rem;
+  background: var(--gold);
+  color: var(--brown);
+  cursor: pointer;
+  font-weight: 800;
+}
+
+.ingredient-editor__toggle {
+  padding: 0.8rem 1rem;
+}
+
+.ingredient-editor[data-open="true"] .ingredient-editor__toggle,
+.ingredient-editor[data-open="false"] .ingredient-editor__panel {
+  display: none;
+}
+
+.ingredient-editor__panel {
+  display: grid;
+  gap: 0.75rem;
+  inline-size: min(22rem, calc(100vw - 2rem));
+  padding: 1rem;
+  border: 1px solid rgba(255,255,255,.2);
+  border-radius: 1rem;
+  background: rgba(44, 7, 4, 0.94);
+  color: var(--cream);
+  box-shadow: 0 1rem 3rem rgba(0,0,0,.25);
+  backdrop-filter: blur(12px);
+}
+
+.ingredient-editor__mode {
+  color: var(--gold);
+  font-size: 0.75rem;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.ingredient-editor label {
+  display: grid;
+  grid-template-columns: 4.5rem 1fr;
+  align-items: center;
+  gap: 0.75rem;
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+
+.ingredient-editor input {
+  inline-size: 100%;
+}
+
+.ingredient-editor__actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.ingredient-editor__actions button {
+  flex: 1;
+  padding: 0.65rem 0.7rem;
+}
+
+.ingredient-editor small {
+  color: rgba(255,255,255,.7);
+  line-height: 1.35;
 }
 
 .nav {
@@ -642,13 +777,13 @@ a {
   to { opacity: 1; transform: none; }
 }
 
-@keyframes ingredients-left {
-  from { opacity: 0; transform: translate3d(0, -10%, 0) scale(1.025); }
+@keyframes ingredient-from-top {
+  from { opacity: 0; transform: translate3d(0, -20svh, 0); }
   to { opacity: 1; transform: none; }
 }
 
-@keyframes ingredients-right {
-  from { opacity: 0; transform: translate3d(0, 10%, 0) scale(1.025); }
+@keyframes ingredient-from-bottom {
+  from { opacity: 0; transform: translate3d(0, 20svh, 0); }
   to { opacity: 1; transform: none; }
 }
 
@@ -773,8 +908,16 @@ a {
   }
 
   .hero__ingredients {
-    display: none;
+    opacity: 0.88;
   }
+
+  .ingredient-piece--lettuceTop { inline-size:9rem; }
+  .ingredient-piece--tomatoLeft { inline-size:7.5rem; }
+  .ingredient-piece--lettuceBottom { inline-size:8.5rem; }
+  .ingredient-piece--onionTop { inline-size:7.5rem; }
+  .ingredient-piece--lettuceRight { inline-size:7rem; }
+  .ingredient-piece--tomatoRight { inline-size:7.5rem; }
+  .ingredient-piece--onionBottom { inline-size:7.5rem; }
 
   .hero__social {
     inset-inline-end: 1rem;
@@ -922,7 +1065,7 @@ a {
 
   .hero__title,
   .hero__burger,
-  .hero__ingredients {
+  .ingredient-piece > span {
     animation: none;
   }
 

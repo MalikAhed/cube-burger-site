@@ -1,7 +1,18 @@
 import "@fontsource-variable/big-shoulders"
 import "./styles.css"
+import savedIngredientLayout from "./ingredient-layout.json"
 
 const assetUrl = (file) => `${import.meta.env.BASE_URL}assets/${file}`
+
+const ingredientPieces = [
+  ["lettuceTop", "Top lettuce"],
+  ["tomatoLeft", "Left tomato"],
+  ["lettuceBottom", "Lower lettuce"],
+  ["onionTop", "Top onion"],
+  ["lettuceRight", "Right lettuce"],
+  ["tomatoRight", "Right tomato"],
+  ["onionBottom", "Lower onion"],
+]
 
 const arrowIcon = `
   <svg aria-hidden="true" viewBox="0 0 24 24" fill="none">
@@ -18,8 +29,13 @@ document.querySelector("#app").innerHTML = `
   <main>
     <section class="hero" id="opening" data-hero>
       <img class="hero__background" src="${assetUrl("hero-background.png")}" alt="" width="1538" height="1022" fetchpriority="high" />
-      <img class="hero__ingredients hero__ingredients--left" src="${assetUrl("hero-ingredients.png")}" alt="" width="1536" height="1024" />
-      <img class="hero__ingredients hero__ingredients--right" src="${assetUrl("hero-ingredients.png")}" alt="" width="1536" height="1024" />
+      <div class="hero__ingredients" aria-hidden="true" style="--ingredients-image: url('${assetUrl("hero-ingredients.png")}')">
+        ${ingredientPieces.map(([id, label], index) => `
+          <button class="ingredient-piece ingredient-piece--${id}" type="button" data-ingredient="${id}" data-enter="${index % 2 ? "bottom" : "top"}" tabindex="-1" aria-label="${label}">
+            <span></span>
+          </button>
+        `).join("")}
+      </div>
 
       <header class="nav shell">
         <a class="brand" href="#opening" aria-label="Cube Burger home" data-hero-brand>
@@ -169,3 +185,128 @@ document.querySelectorAll('a[href^="#"]').forEach((link) => {
     target.scrollIntoView({ behavior: "smooth", block: "start" })
   })
 })
+
+const ingredientLayout = structuredClone(savedIngredientLayout)
+const ingredientStage = document.querySelector(".hero__ingredients")
+const ingredientElements = [...document.querySelectorAll("[data-ingredient]")]
+
+const currentIngredientMode = () => window.innerWidth <= 768 ? "mobile" : "desktop"
+
+const applyIngredientLayout = () => {
+  const mode = currentIngredientMode()
+  ingredientElements.forEach((element) => {
+    const position = ingredientLayout[mode][element.dataset.ingredient]
+    element.style.left = `${position.x}%`
+    element.style.top = `${position.y}%`
+    element.style.setProperty("--piece-scale", position.scale)
+    element.style.setProperty("--piece-rotation", `${position.rotate}deg`)
+  })
+}
+
+applyIngredientLayout()
+window.addEventListener("resize", applyIngredientLayout)
+
+if (import.meta.env.DEV) {
+  document.body.insertAdjacentHTML("beforeend", `
+    <div class="ingredient-editor" data-open="false">
+      <button class="ingredient-editor__toggle" type="button">Arrange ingredients</button>
+      <div class="ingredient-editor__panel" aria-label="Ingredient position editor">
+        <strong>Ingredient layout</strong>
+        <span class="ingredient-editor__mode"></span>
+        <label>Size <input data-control="scale" type="range" min="0.25" max="1.6" step="0.01" /></label>
+        <label>Rotation <input data-control="rotate" type="range" min="-90" max="90" step="1" /></label>
+        <div class="ingredient-editor__actions">
+          <button data-action="save" type="button">Save changes</button>
+          <button data-action="reset" type="button">Reset</button>
+          <button data-action="done" type="button">Done</button>
+        </div>
+        <small>Drag any ingredient. Resize the browser to edit the mobile or desktop layout.</small>
+      </div>
+    </div>
+  `)
+
+  const editor = document.querySelector(".ingredient-editor")
+  const modeLabel = editor.querySelector(".ingredient-editor__mode")
+  const scaleControl = editor.querySelector('[data-control="scale"]')
+  const rotateControl = editor.querySelector('[data-control="rotate"]')
+  let selected = ingredientElements[0]
+  let editing = false
+
+  const selectIngredient = (element) => {
+    selected?.removeAttribute("data-selected")
+    selected = element
+    selected.dataset.selected = "true"
+    const value = ingredientLayout[currentIngredientMode()][selected.dataset.ingredient]
+    scaleControl.value = value.scale
+    rotateControl.value = value.rotate
+  }
+
+  const setEditing = (value) => {
+    editing = value
+    editor.dataset.open = String(value)
+    ingredientStage.dataset.editing = String(value)
+    ingredientElements.forEach((element) => { element.tabIndex = value ? 0 : -1 })
+    modeLabel.textContent = `${currentIngredientMode()} layout`
+    if (value) selectIngredient(selected)
+  }
+
+  editor.querySelector(".ingredient-editor__toggle").addEventListener("click", () => setEditing(true))
+  editor.querySelector('[data-action="done"]').addEventListener("click", () => setEditing(false))
+
+  ingredientElements.forEach((element) => {
+    element.addEventListener("pointerdown", (event) => {
+      if (!editing) return
+      event.preventDefault()
+      selectIngredient(element)
+      element.setPointerCapture(event.pointerId)
+    })
+
+    element.addEventListener("pointermove", (event) => {
+      if (!editing || !element.hasPointerCapture(event.pointerId)) return
+      const bounds = ingredientStage.getBoundingClientRect()
+      const value = ingredientLayout[currentIngredientMode()][element.dataset.ingredient]
+      value.x = Math.round(Math.max(-10, Math.min(110, (event.clientX - bounds.left) / bounds.width * 100)) * 10) / 10
+      value.y = Math.round(Math.max(-10, Math.min(110, (event.clientY - bounds.top) / bounds.height * 100)) * 10) / 10
+      applyIngredientLayout()
+    })
+
+    element.addEventListener("click", (event) => {
+      if (!editing) return
+      event.preventDefault()
+      selectIngredient(element)
+    })
+  })
+
+  const updateSelected = () => {
+    const value = ingredientLayout[currentIngredientMode()][selected.dataset.ingredient]
+    value.scale = Number(scaleControl.value)
+    value.rotate = Number(rotateControl.value)
+    applyIngredientLayout()
+  }
+
+  scaleControl.addEventListener("input", updateSelected)
+  rotateControl.addEventListener("input", updateSelected)
+
+  editor.querySelector('[data-action="reset"]').addEventListener("click", () => {
+    Object.assign(ingredientLayout, structuredClone(savedIngredientLayout))
+    applyIngredientLayout()
+    selectIngredient(selected)
+  })
+
+  editor.querySelector('[data-action="save"]').addEventListener("click", async (event) => {
+    const button = event.currentTarget
+    button.textContent = "Saving…"
+    const response = await fetch("/__ingredient-layout", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(ingredientLayout),
+    })
+    button.textContent = response.ok ? "Saved ✓" : "Save failed"
+    setTimeout(() => { button.textContent = "Save changes" }, 1800)
+  })
+
+  window.addEventListener("resize", () => {
+    modeLabel.textContent = `${currentIngredientMode()} layout`
+    if (editing) selectIngredient(selected)
+  })
+}

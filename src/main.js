@@ -29,7 +29,7 @@ const brandMark = `
 document.querySelector("#app").innerHTML = `
   <main>
     <section class="hero" id="opening" data-hero>
-      <img class="hero__background" src="${assetUrl("hero-background.png")}" alt="" width="1538" height="1022" fetchpriority="high" />
+      <img class="hero__background" src="${assetUrl("hero-background.webp")}" alt="" width="1538" height="1022" fetchpriority="high" />
       <div class="hero__ingredients" aria-hidden="true" style="--ingredients-image: url('${ingredientImageUrl}')">
         ${ingredientPieces.map(([id, label], index) => `
           <button class="ingredient-piece ingredient-piece--${id}" type="button" data-ingredient="${id}" data-enter="${index % 2 ? "bottom" : "top"}" tabindex="-1" aria-label="${label}">
@@ -58,7 +58,7 @@ document.querySelector("#app").innerHTML = `
           <span>CUBE</span>
           <span>BURGER</span>
         </h1>
-        <img class="hero__burger" src="${assetUrl("hero-burger.png")}" alt="A stacked Cube Burger" width="1536" height="1024" data-hero-subject />
+        <img class="hero__burger" src="${assetUrl("hero-burger.webp")}" alt="A stacked Cube Burger" width="1536" height="1024" data-hero-subject />
       </div>
 
       <a class="hero__social" href="#story" aria-label="Explore Cube Burger">CB</a>
@@ -76,7 +76,7 @@ document.querySelector("#app").innerHTML = `
 
         <div class="menu__layout">
           <figure class="menu__photo">
-            <img src="${assetUrl("menu-food.png")}" alt="Crispy chicken burger, grilled roll, and loaded fries" width="1122" height="1402" loading="lazy" />
+            <img src="${assetUrl("menu-food.webp")}" alt="Crispy chicken burger, grilled roll, and loaded fries" width="1122" height="1402" loading="lazy" />
           </figure>
 
           <div class="menu__cards">
@@ -122,13 +122,13 @@ document.querySelector("#app").innerHTML = `
 
         <div class="food-cycle" aria-label="Burger, fries, and milkshake rotating showcase">
           <div class="food-cycle__item food-cycle__item--burger">
-            <img src="${assetUrl("rotator-burger.png")}" alt="Double smash cheeseburger" width="1254" height="1254" loading="lazy" />
+            <img src="${assetUrl("rotator-burger.webp")}" alt="Double smash cheeseburger" width="1254" height="1254" loading="lazy" />
           </div>
           <div class="food-cycle__item food-cycle__item--fries">
-            <img src="${assetUrl("rotator-fries.png")}" alt="Golden french fries" width="1254" height="1254" loading="lazy" />
+            <img src="${assetUrl("rotator-fries.webp")}" alt="Golden french fries" width="1254" height="1254" loading="lazy" />
           </div>
           <div class="food-cycle__item food-cycle__item--drink">
-            <img src="${assetUrl("rotator-drink.png")}" alt="Vanilla milkshake" width="1254" height="1254" loading="lazy" />
+            <img src="${assetUrl("rotator-drink.webp")}" alt="Vanilla milkshake" width="1254" height="1254" loading="lazy" />
           </div>
         </div>
       </div>

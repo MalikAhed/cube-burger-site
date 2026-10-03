@@ -31,3 +31,10 @@ Create a production build with `npm run build`. To run the visual checks, start 
 ## Responsive validation
 
 The visual check covers ten viewport states from `360 × 640` through `2560 × 1080`, plus reduced-motion and RTL overflow checks. It verifies that key sections remain visible and that the page has no horizontal overflow.
+
+## License
+
+Original contributions by Malik Abuallatta are licensed under the
+[MIT License](LICENSE). Third-party code, adaptations, dependencies, and assets
+retain their existing licenses and notices. This license does not grant new
+rights to third-party material.

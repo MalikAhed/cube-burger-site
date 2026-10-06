@@ -2,7 +2,15 @@
   "name": "cube-burger-site",
   "private": true,
   "version": "1.0.0",
+  "description": "Responsive art-directed restaurant landing page built with Vite.",
   "type": "module",
+  "keywords": [
+    "restaurant",
+    "landing-page",
+    "responsive-design",
+    "vite"
+  ],
+  "author": "Malik Abuallatta",
   "scripts": {
     "dev": "vite --host 0.0.0.0",
     "build": "vite build",
